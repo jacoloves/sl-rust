@@ -1,140 +1,148 @@
-const D51HEIGHT: u32 = 10;
-const D51FUNNEL: u32 = 7;
-const D51LENGTH: u32 = 83;
-const D51PATTERNS: u32 = 6;
+/*========================================
+ *    sl.rs: SL version 5.02 converted to Rust
+ *    Original Author: Toyoda Masashi
+ *    Converted by ChatGPT
+ *    Last Modified: 2014/06/03
+ *========================================
+ */
 
-const D51STR1: &str = "      ====        ________                ___________ ";
-const D51STR2: &str = "  _D _|  |_______/        \\__I_I_____===__|_________| ";
-const D51STR3: &str = "   |(_)---  |   H\\________/ |   |        =|___ ___|   ";
-const D51STR4: &str = "   /     |  |   H  |  |     |   |         ||_| |_||   ";
-const D51STR5: &str = "  |      |  |   H  |__--------------------| [___] |   ";
-const D51STR6: &str = "  | ________|___H__/__|_____/[][]~\\_______|       |   ";
-const D51STR7: &str = "  |/ |   |-----------I_____I [][] []  D   |=======|__ ";
+pub const D51HEIGHT: usize = 10;
+pub const D51FUNNEL: usize = 7;
+pub const D51LENGTH: usize = 83;
+pub const D51PATTERNS: usize = 6;
 
-const D51WHL11: &str = "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ ";
-const D51WHL12: &str = " |/-=|___|=    ||    ||    ||    |_____/~\\___/        ";
-const D51WHL13: &str = "  \\_/      \\O=====O=====O=====O_/      \\_/            ";
+pub const D51STR1: &str = "      ====        ________                ___________ ";
+pub const D51STR2: &str = "  _D _|  |_______/        \\__I_I_____===__|_________| ";
+pub const D51STR3: &str = "   |(_)---  |   H\\________/ |   |        =|___ ___|   ";
+pub const D51STR4: &str = "   /     |  |   H  |  |     |   |         ||_| |_||   ";
+pub const D51STR5: &str = "  |      |  |   H  |__--------------------| [___] |   ";
+pub const D51STR6: &str = "  | ________|___H__/__|_____/[][]~\\_______|       |   ";
+pub const D51STR7: &str = "  |/ |   |-----------I_____I [][] []  D   |=======|__ ";
 
-const D51WHL21: &str = "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ ";
-const D51WHL22: &str = " |/-=|___|=O=====O=====O=====O   |_____/~\\___/        ";
-const D51WHL23: &str = "  \\_/      \\__/  \\__/  \\__/  \\__/      \\_/            ";
+pub const D51WHL11: &str = "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ ";
+pub const D51WHL12: &str = " |/-=|___|=    ||    ||    ||    |_____/~\\___/        ";
+pub const D51WHL13: &str = "  \\_/      \\O=====O=====O=====O_/      \\_/            ";
 
-const D51WHL31: &str = "__/ =| o |=-O=====O=====O=====O \\ ____Y___________|__ ";
-const D51WHL32: &str = " |/-=|___|=    ||    ||    ||    |_____/~\\___/        ";
-const D51WHL33: &str = "  \\_/      \\__/  \\__/  \\__/  \\__/      \\_/            ";
+pub const D51WHL21: &str = "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ ";
+pub const D51WHL22: &str = " |/-=|___|=O=====O=====O=====O   |_____/~\\___/        ";
+pub const D51WHL23: &str = "  \\_/      \\__/  \\__/  \\__/  \\__/      \\_/            ";
 
-const D51WHL41: &str = "__/ =| o |=-~O=====O=====O=====O\\ ____Y___________|__ ";
-const D51WHL42: &str = " |/-=|___|=    ||    ||    ||    |_____/~\\___/        ";
-const D51WHL43: &str = "  \\_/      \\__/  \\__/  \\__/  \\__/      \\_/            ";
+pub const D51WHL31: &str = "__/ =| o |=-O=====O=====O=====O \\ ____Y___________|__ ";
+pub const D51WHL32: &str = " |/-=|___|=    ||    ||    ||    |_____/~\\___/        ";
+pub const D51WHL33: &str = "  \\_/      \\__/  \\__/  \\__/  \\__/      \\_/            ";
 
-const D51WHL51: &str = "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ ";
-const D51WHL52: &str = " |/-=|___|=   O=====O=====O=====O|_____/~\\___/        ";
-const D51WHL53: &str = "  \\_/      \\__/  \\__/  \\__/  \\__/      \\_/            ";
+pub const D51WHL41: &str = "__/ =| o |=-~O=====O=====O=====O\\ ____Y___________|__ ";
+pub const D51WHL42: &str = " |/-=|___|=    ||    ||    ||    |_____/~\\___/        ";
+pub const D51WHL43: &str = "  \\_/      \\__/  \\__/  \\__/  \\__/      \\_/            ";
 
-const D51WHL61: &str = "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ ";
-const D51WHL62: &str = " |/-=|___|=    ||    ||    ||    |_____/~\\___/        ";
-const D51WHL63: &str = "  \\_/      \\_O=====O=====O=====O/      \\_/            ";
+pub const D51WHL51: &str = "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ ";
+pub const D51WHL52: &str = " |/-=|___|=   O=====O=====O=====O|_____/~\\___/        ";
+pub const D51WHL53: &str = "  \\_/      \\__/  \\__/  \\__/  \\__/      \\_/            ";
 
-const D51DEL: &str = "                                                      ";
+pub const D51WHL61: &str = "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ ";
+pub const D51WHL62: &str = " |/-=|___|=    ||    ||    ||    |_____/~\\___/        ";
+pub const D51WHL63: &str = "  \\_/      \\_O=====O=====O=====O/      \\_/            ";
 
-const COAL01: &str = "                              ";
-const COAL02: &str = "                              ";
-const COAL03: &str = "    _________________         ";
-const COAL04: &str = "   _|                \\_____A  ";
-const COAL05: &str = " =|                        |  ";
-const COAL06: &str = " -|                        |  ";
-const COAL07: &str = "__|________________________|_ ";
-const COAL08: &str = "|__________________________|_ ";
-const COAL09: &str = "   |_D__D__D_|  |_D__D__D_|   ";
-const COAL10: &str = "    \\_/   \\_/    \\_/   \\_/    ";
+pub const D51DEL: &str = "                                                      ";
 
-const COALDEL: &str = "                              ";
+pub const COAL01: &str = "                              ";
+pub const COAL02: &str = "                              ";
+pub const COAL03: &str = "    _________________         ";
+pub const COAL04: &str = "   _|                \\_____A  ";
+pub const COAL05: &str = " =|                        |  ";
+pub const COAL06: &str = " -|                        |  ";
+pub const COAL07: &str = "__|________________________|_ ";
+pub const COAL08: &str = "|__________________________|_ ";
+pub const COAL09: &str = "   |_D__D__D_|  |_D__D__D_|   ";
+pub const COAL10: &str = "    \\_/   \\_/    \\_/   \\_/    ";
 
-const LOGOHEIGHT: u32 = 6;
-const LOGOFUNNEL: u32 = 4;
-const LOGOLENGTH: u32 = 84;
-const LOGOPATTERNS: u32 = 6;
+pub const COALDEL: &str = "                              ";
 
-const LOGO1: &str = "     ++      +------ ";
-const LOGO2: &str = "     ||      |+-+ |  ";
-const LOGO3: &str = "   /---------|| | |  ";
-const LOGO4: &str = "  + ========  +-+ |  ";
+pub const LOGOHEIGHT: usize = 6;
+pub const LOGOFUNNEL: usize = 4;
+pub const LOGOLENGTH: usize = 84;
+pub const LOGOPATTERNS: usize = 6;
 
-const LWHL11: &str = " _|--O========O~\\-+  ";
-const LWHL12: &str = "//// \\_/      \\_/    ";
+pub const LOGO1: &str = "     ++      +------ ";
+pub const LOGO2: &str = "     ||      |+-+ |  ";
+pub const LOGO3: &str = "   /---------|| | |  ";
+pub const LOGO4: &str = "  + ========  +-+ |  ";
 
-const LWHL21: &str = " _|--/O========O\\-+  ";
-const LWHL22: &str = "//// \\_/      \\_/    ";
+pub const LWHL11: &str = " _|--O========O~\\-+  ";
+pub const LWHL12: &str = "//// \\_/      \\_/    ";
 
-const LWHL31: &str = " _|--/~O========O-+  ";
-const LWHL32: &str = "//// \\_/      \\_/    ";
+pub const LWHL21: &str = " _|--/O========O\\-+  ";
+pub const LWHL22: &str = "//// \\_/      \\_/    ";
 
-const LWHL41: &str = " _|--/~\\------/~\\-+  ";
-const LWHL42: &str = "//// \\_O========O    ";
+pub const LWHL31: &str = " _|--/~O========O-+  ";
+pub const LWHL32: &str = "//// \\_/      \\_/    ";
 
-const LWHL51: &str = " _|--/~\\------/~\\-+  ";
-const LWHL52: &str = "//// \\O========O/    ";
+pub const LWHL41: &str = " _|--/~\\------/~\\-+  ";
+pub const LWHL42: &str = "//// \\_O========O    ";
 
-const LWHL61: &str = " _|--/~\\------/~\\-+  ";
-const LWHL62: &str = "//// O========O_/    ";
+pub const LWHL51: &str = " _|--/~\\------/~\\-+  ";
+pub const LWHL52: &str = "//// \\O========O/    ";
 
-const LCOAL1: &str = "____                 ";
-const LCOAL2: &str = "|   \\@@@@@@@@@@@     ";
-const LCOAL3: &str = "|    \\@@@@@@@@@@@@@_ ";
-const LCOAL4: &str = "|                  | ";
-const LCOAL5: &str = "|__________________| ";
-const LCOAL6: &str = "   (O)       (O)     ";
+pub const LWHL61: &str = " _|--/~\\------/~\\-+  ";
+pub const LWHL62: &str = "//// O========O_/    ";
 
-const LCAR1: &str = "____________________ ";
-const LCAR2: &str = "|  ___ ___ ___ ___ | ";
-const LCAR3: &str = "|  |_| |_| |_| |_| | ";
-const LCAR4: &str = "|__________________| ";
-const LCAR5: &str = "|__________________| ";
-const LCAR6: &str = "   (O)        (O)    ";
+pub const LCOAL1: &str = "____                 ";
+pub const LCOAL2: &str = "|   \\\\@@@@@@@@@@@     ";
+pub const LCOAL3: &str = "|    \\\\@@@@@@@@@@@@@_ ";
+pub const LCOAL4: &str = "|                  | ";
+pub const LCOAL5: &str = "|__________________| ";
+pub const LCOAL6: &str = "   (O)       (O)     ";
 
-const DELLN: &str = "                     ";
+pub const LCAR1: &str = "____________________ ";
+pub const LCAR2: &str = "|  ___ ___ ___ ___ | ";
+pub const LCAR3: &str = "|  |_| |_| |_| |_| | ";
+pub const LCAR4: &str = "|__________________| ";
+pub const LCAR5: &str = "|__________________| ";
+pub const LCAR6: &str = "   (O)        (O)    ";
 
-const C51HEIGHT: u32 = 11;
-const C51FUNNEL: u32 = 7;
-const C51LENGTH: u32 = 87;
-const C51PATTERNS: u32 = 6;
+pub const DELLN: &str = "                     ";
 
-const C51DEL: &str = "                                                       ";
+pub const C51HEIGHT: usize = 11;
+pub const C51FUNNEL: usize = 7;
+pub const C51LENGTH: usize = 87;
+pub const C51PATTERNS: usize = 6;
 
-const C51STR1: &str = "        ___                                            ";
-const C51STR2: &str = "       _|_|_  _     __       __             ___________";
-const C51STR3: &str = "    D__/   \\_(_)___|  |__H__|  |_____I_Ii_()|_________|";
-const C51STR4: &str = "     | `---'   |:: `--'  H  `--'         |  |___ ___|  ";
-const C51STR5: &str = "    +|~~~~~~~~++::~~~~~~~H~~+=====+~~~~~~|~~||_| |_||  ";
-const C51STR6: &str = "    ||        | ::       H  +=====+      |  |::  ...|  ";
-const C51STR7: &str = "|    | _______|_::-----------------[][]-----|       |  ";
+pub const C51DEL: &str = "                                                       ";
 
-const C51WH61: &str = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__";
-const C51WH62: &str = "------'|oOo|==[]=-     ||      ||      |  ||=======_|__";
-const C51WH63: &str = "/~\\____|___|/~\\_|   O=======O=======O  |__|+-/~\\_|     ";
-const C51WH64: &str = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       ";
+pub const C51STR1: &str = "        ___                                            ";
+pub const C51STR2: &str = "       _|_|_  _     __       __             ___________";
+pub const C51STR3: &str = "    D__/   \\\\_(_)___|  |__H__|  |_____I_Ii_()|_________|";
+pub const C51STR4: &str = "     | `---'   |:: `--'  H  `--'         |  |___ ___|  ";
+pub const C51STR5: &str = "    +|~~~~~~~~++::~~~~~~~H~~+=====+~~~~~~|~~||_| |_||  ";
+pub const C51STR6: &str = "    ||        | ::       H  +=====+      |  |::  ...|  ";
+pub const C51STR7: &str = "|    | _______|_::-----------------[][]-----|       |  ";
 
-const C51WH51: &str = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__";
-const C51WH52: &str = "------'|oOo|===[]=-    ||      ||      |  ||=======_|__";
-const C51WH53: &str = "/~\\____|___|/~\\_|    O=======O=======O |__|+-/~\\_|     ";
-const C51WH54: &str = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       ";
+pub const C51WH61: &str = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__";
+pub const C51WH62: &str = "------'|oOo|==[]=-     ||      ||      |  ||=======_|__";
+pub const C51WH63: &str = "/~\\____|___|/~\\_|   O=======O=======O  |__|+-/~\\_|     ";
+pub const C51WH64: &str = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       ";
 
-const C51WH41: &str = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__";
-const C51WH42: &str = "------'|oOo|===[]=- O=======O=======O  |  ||=======_|__";
-const C51WH43: &str = "/~\\____|___|/~\\_|      ||      ||      |__|+-/~\\_|     ";
-const C51WH44: &str = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       ";
+pub const C51WH51: &str = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__";
+pub const C51WH52: &str = "------'|oOo|===[]=-    ||      ||      |  ||=======_|__";
+pub const C51WH53: &str = "/~\\____|___|/~\\_|    O=======O=======O |__|+-/~\\_|     ";
+pub const C51WH54: &str = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       ";
 
-const C51WH31: &str = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__";
-const C51WH32: &str = "------'|oOo|==[]=- O=======O=======O   |  ||=======_|__";
-const C51WH33: &str = "/~\\____|___|/~\\_|      ||      ||      |__|+-/~\\_|     ";
-const C51WH34: &str = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       ";
+pub const C51WH41: &str = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__";
+pub const C51WH42: &str = "------'|oOo|===[]=- O=======O=======O  |  ||=======_|__";
+pub const C51WH43: &str = "/~\\____|___|/~\\_|      ||      ||      |__|+-/~\\_|     ";
+pub const C51WH44: &str = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       ";
 
-const C51WH21: &str = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__";
-const C51WH22: &str = "------'|oOo|=[]=- O=======O=======O    |  ||=======_|__";
-const C51WH23: &str = "/~\\____|___|/~\\_|      ||      ||      |__|+-/~\\_|     ";
-const C51WH24: &str = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       ";
+pub const C51WH31: &str = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__";
+pub const C51WH32: &str = "------'|oOo|==[]=- O=======O=======O   |  ||=======_|__";
+pub const C51WH33: &str = "/~\\____|___|/~\\_|      ||      ||      |__|+-/~\\_|     ";
+pub const C51WH34: &str = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       ";
 
-const C51WH11: &str = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__";
-const C51WH12: &str = "------'|oOo|=[]=-      ||      ||      |  ||=======_|__";
-const C51WH13: &str = "/~\\____|___|/~\\_|  O=======O=======O   |__|+-/~\\_|     ";
-const C51WH14: &str = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       ";
+pub const C51WH21: &str = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__";
+pub const C51WH22: &str = "------'|oOo|=[]=- O=======O=======O    |  ||=======_|__";
+pub const C51WH23: &str = "/~\\____|___|/~\\_|      ||      ||      |__|+-/~\\_|     ";
+pub const C51WH24: &str = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       ";
+
+pub const C51WH11: &str = "| /~~ ||   |-----/~~~~\\  /[I_____I][][] --|||_______|__";
+pub const C51WH12: &str = "------'|oOo|=[]=-      ||      ||      |  ||=======_|__";
+pub const C51WH13: &str = "/~\\____|___|/~\\_|  O=======O=======O   |__|+-/~\\_|     ";
+pub const C51WH14: &str = "\\_/         \\_/  \\____/  \\____/  \\____/      \\_/       ";
