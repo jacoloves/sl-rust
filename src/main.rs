@@ -1,9 +1,16 @@
 mod sl;
 
 use sl::*;
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::{
+    sync::atomic::{AtomicBool, Ordering},
+    thread,
+    time::Duration,
+};
 
-use ncurses::{COLS, ERR, LINES, OK};
+use ncurses::{
+    curs_set, endwin, getch, initscr, leaveok, mvaddch, mvcur, nodelay, noecho, refresh, scrollok,
+    stdscr, COLS, CURSOR_VISIBILITY, ERR, LINES, OK,
+};
 
 static ACCIDENT: AtomicBool = AtomicBool::new(false);
 static LOGO: AtomicBool = AtomicBool::new(false);
@@ -22,6 +29,12 @@ fn my_mvaddstr(y: i32, x: i32, s: &str) -> i32 {
     let mut chars = s.chars();
     while x < 0 {
         if chars.next().is_none() {
+            return ERR;
+        }
+        x += 1;
+    }
+    for c in chars {
+        if mvaddch(y, x, c as u32) == ERR {
             return ERR;
         }
         x += 1;
@@ -64,12 +77,11 @@ fn add_sl(x: i32) -> i32 {
         (0, 0, 0)
     };
 
+    let sl_patterns = LOGOPATTERNS as i32;
+    let index = ((LOGOLENGTH as i32 + x) % sl_patterns + sl_patterns) % sl_patterns;
+
     for i in 0..=LOGOHEIGHT {
-        my_mvaddstr(
-            y + i as i32,
-            x,
-            sl[((LOGOLENGTH as i32 + x) / 3 % LOGOPATTERNS as i32) as usize][i],
-        );
+        my_mvaddstr(y + i as i32, x, sl[index as usize][i]);
         my_mvaddstr(y + i as i32 + py1, x + 21, coal[i]);
         my_mvaddstr(y + i as i32 + py2, x + 42, car[i]);
         my_mvaddstr(y + i as i32 + py3, x + 63, car[i]);
@@ -140,6 +152,158 @@ fn add_smoke(y: i32, x: i32) {
     }
 }
 
+fn add_D51(x: i32) -> i32 {
+    let d51 = [
+        [
+            D51STR1, D51STR2, D51STR3, D51STR4, D51STR5, D51STR6, D51STR7, D51WHL11, D51WHL12,
+            D51WHL13, D51DEL,
+        ],
+        [
+            D51STR1, D51STR2, D51STR3, D51STR4, D51STR5, D51STR6, D51STR7, D51WHL21, D51WHL22,
+            D51WHL23, D51DEL,
+        ],
+        [
+            D51STR1, D51STR2, D51STR3, D51STR4, D51STR5, D51STR6, D51STR7, D51WHL31, D51WHL32,
+            D51WHL33, D51DEL,
+        ],
+        [
+            D51STR1, D51STR2, D51STR3, D51STR4, D51STR5, D51STR6, D51STR7, D51WHL41, D51WHL42,
+            D51WHL43, D51DEL,
+        ],
+        [
+            D51STR1, D51STR2, D51STR3, D51STR4, D51STR5, D51STR6, D51STR7, D51WHL51, D51WHL52,
+            D51WHL53, D51DEL,
+        ],
+        [
+            D51STR1, D51STR2, D51STR3, D51STR4, D51STR5, D51STR6, D51STR7, D51WHL61, D51WHL62,
+            D51WHL63, D51DEL,
+        ],
+    ];
+    let coal = [
+        COAL01, COAL02, COAL03, COAL04, COAL05, COAL06, COAL07, COAL08, COAL09, COAL10, COALDEL,
+    ];
+
+    if x < -(D51LENGTH as i32) {
+        return ERR;
+    }
+
+    let mut y = LINES() / 2 - 5;
+    let dy = if FLY.load(Ordering::Relaxed) {
+        y = (x / 7) + LINES() - (COLS() / 7) - D51HEIGHT as i32;
+        1
+    } else {
+        0
+    };
+
+    let d51_patterns = D51PATTERNS as i32;
+    let index = ((D51LENGTH as i32 + x) % d51_patterns + d51_patterns) % d51_patterns;
+
+    for i in 0..=D51HEIGHT {
+        my_mvaddstr(y + i as i32, x, d51[index as usize][i]);
+        my_mvaddstr(y + i as i32 + dy, x + 53, coal[i]);
+    }
+    if ACCIDENT.load(Ordering::Relaxed) {
+        add_man(y + 2, x + 43);
+        add_man(y + 2, x + 47);
+    }
+    add_smoke(y - 1, x + D51FUNNEL as i32);
+    OK
+}
+
+fn add_C51(x: i32) -> i32 {
+    let c51 = [
+        [
+            C51STR1, C51STR2, C51STR3, C51STR4, C51STR5, C51STR6, C51STR7, C51WH11, C51WH12,
+            C51WH13, C51WH14, C51DEL,
+        ],
+        [
+            C51STR1, C51STR2, C51STR3, C51STR4, C51STR5, C51STR6, C51STR7, C51WH21, C51WH22,
+            C51WH23, C51WH24, C51DEL,
+        ],
+        [
+            C51STR1, C51STR2, C51STR3, C51STR4, C51STR5, C51STR6, C51STR7, C51WH31, C51WH32,
+            C51WH33, C51WH34, C51DEL,
+        ],
+        [
+            C51STR1, C51STR2, C51STR3, C51STR4, C51STR5, C51STR6, C51STR7, C51WH41, C51WH42,
+            C51WH43, C51WH44, C51DEL,
+        ],
+        [
+            C51STR1, C51STR2, C51STR3, C51STR4, C51STR5, C51STR6, C51STR7, C51WH51, C51WH52,
+            C51WH53, C51WH54, C51DEL,
+        ],
+        [
+            C51STR1, C51STR2, C51STR3, C51STR4, C51STR5, C51STR6, C51STR7, C51WH61, C51WH62,
+            C51WH63, C51WH64, C51DEL,
+        ],
+    ];
+    let coal = [
+        COALDEL, COAL01, COAL02, COAL03, COAL04, COAL05, COAL06, COAL07, COAL08, COAL09, COAL10,
+        COALDEL,
+    ];
+
+    if x < -(C51LENGTH as i32) {
+        return ERR;
+    }
+
+    let mut y = LINES() / 2 - 5;
+    let dy = if FLY.load(Ordering::Relaxed) {
+        y = (x / 7) + LINES() - (COLS() / 7) - C51HEIGHT as i32;
+        1
+    } else {
+        0
+    };
+
+    let c51_patterns = C51PATTERNS as i32;
+    let index = ((C51LENGTH as i32 + x) % c51_patterns + c51_patterns) % c51_patterns;
+
+    for i in 0..=C51HEIGHT {
+        my_mvaddstr(y + i as i32, x, c51[index as usize][i]);
+        my_mvaddstr(y + i as i32 + dy, x + 55, coal[i]);
+    }
+    if ACCIDENT.load(Ordering::Relaxed) {
+        add_man(y + 3, x + 45);
+        add_man(y + 3, x + 49);
+    }
+    add_smoke(y - 1, x + C51FUNNEL as i32);
+    OK
+}
+
 fn main() {
-    println!("Hello, world!");
+    let args: Vec<String> = std::env::args().collect();
+    for arg in &args[1..] {
+        if arg.starts_with('-') {
+            option(&arg[1..]);
+        }
+    }
+
+    initscr();
+    signal_hook::flag::register(signal_hook::consts::SIGINT, AtomicBool::new(true).into()).unwrap();
+    noecho();
+    curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
+    nodelay(stdscr(), true);
+    leaveok(stdscr(), true);
+    scrollok(stdscr(), false);
+
+    let mut x = COLS() - 1;
+    loop {
+        if LOGO.load(Ordering::Relaxed) && add_sl(x) == ERR {
+            break;
+        }
+
+        if C51.load(Ordering::Relaxed) && add_C51(x) == ERR {
+            break;
+        }
+
+        if add_D51(x) == ERR {
+            break;
+        }
+
+        getch();
+        refresh();
+        thread::sleep(Duration::from_millis(40));
+        x = x.saturating_sub(1);
+    }
+    mvcur(0, COLS() - 1, LINES() - 1, 0);
+    endwin();
 }
