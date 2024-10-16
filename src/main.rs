@@ -152,6 +152,7 @@ fn add_smoke(y: i32, x: i32) {
     }
 }
 
+#[allow(non_snake_case)]
 fn add_D51(x: i32) -> i32 {
     let d51 = [
         [
@@ -198,9 +199,13 @@ fn add_D51(x: i32) -> i32 {
     let d51_patterns = D51PATTERNS as i32;
     let index = ((D51LENGTH as i32 + x) % d51_patterns + d51_patterns) % d51_patterns;
 
-    for i in 0..=D51HEIGHT {
+    // for i in 0..=D51HEIGHT {
+    //     my_mvaddstr(y + i as i32, x, d51[index as usize][i]);
+    //     my_mvaddstr(y + i as i32 + dy, x + 53, coal[i]);
+    // }
+    for (i, coal_str) in coal.iter().enumerate().take(D51HEIGHT + 1) {
         my_mvaddstr(y + i as i32, x, d51[index as usize][i]);
-        my_mvaddstr(y + i as i32 + dy, x + 53, coal[i]);
+        my_mvaddstr(y + i as i32 + dy, x + 53, coal_str);
     }
     if ACCIDENT.load(Ordering::Relaxed) {
         add_man(y + 2, x + 43);
@@ -210,6 +215,7 @@ fn add_D51(x: i32) -> i32 {
     OK
 }
 
+#[allow(non_snake_case)]
 fn add_C51(x: i32) -> i32 {
     let c51 = [
         [
@@ -257,9 +263,9 @@ fn add_C51(x: i32) -> i32 {
     let c51_patterns = C51PATTERNS as i32;
     let index = ((C51LENGTH as i32 + x) % c51_patterns + c51_patterns) % c51_patterns;
 
-    for i in 0..=C51HEIGHT {
+    for (i, coal_str) in coal.iter().enumerate().take(C51HEIGHT + 1) {
         my_mvaddstr(y + i as i32, x, c51[index as usize][i]);
-        my_mvaddstr(y + i as i32 + dy, x + 55, coal[i]);
+        my_mvaddstr(y + i as i32 + dy, x + 55, coal_str);
     }
     if ACCIDENT.load(Ordering::Relaxed) {
         add_man(y + 3, x + 45);
@@ -273,7 +279,9 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
     for arg in &args[1..] {
         if arg.starts_with('-') {
-            option(&arg[1..]);
+            if let Some(stripped) = arg.strip_prefix('-') {
+                option(stripped);
+            }
         }
     }
 
